@@ -141,11 +141,11 @@ driver.get('https://moodlecc.vit.ac.in/login/index.php')
 
 #Username
 username = driver.find_element_by_xpath('//*[@id="username"]')
-username.send_keys('16blc1030')
+username.send_keys('#Reg no.')
 
 #password
 password = driver.find_element_by_xpath('//*[@id="password"]')
-password.send_keys('Fall@4720')
+password.send_keys('#Password')
 
 #Login
 butt = driver.find_element_by_xpath('//*[@id="loginbtn"]')
