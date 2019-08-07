@@ -14,10 +14,11 @@ import datetime
 from datetime import datetime
 
 
-SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events']
-    
+SCOPES = ['https://www.googleapis.com/auth/calendar',
+          'https://www.googleapis.com/auth/calendar.events']
 
-def bhardo(summary,matter):
+
+def bhardo(summary, matter):
     date1 = matter.split()[1]
     date2 = date1.lower()[:-1]
     if(date2 == "jan"):
@@ -49,8 +50,9 @@ def bhardo(summary,matter):
     """
 
     currentYear = datetime.now().year
-    duedate = matter.split()[0]
-    godate = str(int(duedate)-1)
+    duedate = int(matter.split()[0])
+    godate = str(int(duedate)-2)
+    duedate = str(int(duedate)-1)
 
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
@@ -93,33 +95,33 @@ def bhardo(summary,matter):
     # stored credentials.
 
     event = {
-      'summary': summary,
-      'location': 'Moodle',
-      'description': 'Complete your asignment',
-      'start': {
-        'dateTime': str(currentYear)+'-'+str(month)+'-'+godate+'T09:00:00-07:00',
-        'timeZone': 'Asia/Kolkata',
-      },
-      'end': {
-        'dateTime': str(currentYear)+'-'+str(month)+'-'+str(duedate)+'T09:00:00-07:00',
-        'timeZone': 'Asia/Kolkata',
-      },
-      'recurrence': [
-        'RRULE:FREQ=DAILY;COUNT=2'
-      ],
-      'attendees': [
-        {'email': 'aroranaman17@gmail.com'},
-      ],
-      'reminders': {
-        'useDefault': False,
-        'overrides': [
-          {'method': 'email', 'minutes': 24 * 60},
-          {'method': 'popup', 'minutes': 10},
+        'summary': summary,
+        'location': 'Moodle',
+        'description': 'Complete your asignment',
+        'start': {
+            'dateTime': str(currentYear)+'-'+str(month)+'-'+godate+'T09:00:00-07:00',
+            'timeZone': 'Asia/Kolkata',
+        },
+        'end': {
+            'dateTime': str(currentYear)+'-'+str(month)+'-'+str(duedate)+'T09:00:00-07:00',
+            'timeZone': 'Asia/Kolkata',
+        },
+        'recurrence': [
+            'RRULE:FREQ=DAILY;COUNT=2'
         ],
-      },
+        'attendees': [
+            {'email': '#Your_EMAIL'},
+        ],
+        'reminders': {
+            'useDefault': False,
+            'overrides': [
+                {'method': 'email', 'minutes': 24 * 60},
+                {'method': 'popup', 'minutes': 10},
+            ],
+        },
     }
     event = service.events().insert(calendarId='primary', body=event).execute()
-    print('Event created:]')
+
 
 def hasXpath(xpath):
     try:
@@ -128,37 +130,40 @@ def hasXpath(xpath):
     except:
         return False
 
-driver = webdriver.Chrome(executable_path='C:\\Users\\Naman\\Desktop\\Automata_Moodle\\chromedriver.exe')
+
+driver = webdriver.Chrome(
+    executable_path='C:\\Users\\Naman\\Desktop\\Automata_Moodle\\chromedriver.exe')
 
 options = webdriver.ChromeOptions()
 
 options.add_argument("--start-maximized")
-options.add_argument('--headless')
+# options.add_argument('--headless')
 options.add_argument('--disable-gpu')
 
-driver = webdriver.Chrome(chrome_options=options)
+driver = webdriver.Chrome(options=options)
 driver.get('https://moodlecc.vit.ac.in/login/index.php')
 
-#Username
+# Username
 username = driver.find_element_by_xpath('//*[@id="username"]')
-username.send_keys('#Reg no.')
+username.send_keys('#Your_Registration_Number')
 
-#password
+# password
 password = driver.find_element_by_xpath('//*[@id="password"]')
-password.send_keys('#Password')
+password.send_keys('#Your_Moodle_Password')
 
-#Login
+# Login
 butt = driver.find_element_by_xpath('//*[@id="loginbtn"]')
 butt.click()
 driver.implicitly_wait(30)
 
-#Dashboard
-dash = driver.find_element_by_xpath('//*[@id="nav-drawer"]/nav/a[2]/div/div/span[2]')
+# Dashboard
+dash = driver.find_element_by_xpath('//*[@id="label_2_2"]/span')
 if(dash.is_displayed() and dash.is_enabled()):
     dash.click()
     time.sleep(2)
 else:
-    gogo = driver.find_element_by_xpath('//*[@id="header"]/div/div/div/div[1]/div/button')
+    gogo = driver.find_element_by_xpath(
+        '//*[@id="header"]/div/div/div/div[1]/div/button')
     gogo.click()
     time.sleep(1)
     dash.click()
@@ -166,14 +171,35 @@ else:
 
 driver.implicitly_wait(30)
 
-#Lising out assignments
+# Lising out assignments
 ass = driver.find_elements_by_xpath('//*[@class="event-name text-truncate"]')
-due = driver.find_elements_by_xpath('//*[@class="col-lg-5 text-xs-right text-lg-left text-truncate"]')
+due = driver.find_elements_by_xpath(
+    '//*[@class="span5 text-truncate"]')
 
 
-for i,j  in zip(ass,due):
-    summ = i.text
-    mat = j.text
-    bhardo(summ,mat)
-    print("!!!!!!!!!!!!!!!!!DONE")
+ass_names = []
+due_dates = []
 
+for i in ass:
+    if i.text == '':
+        pass
+    else:
+        ass_names.append(i.text)
+
+for j in due:
+    if j.text == '':
+        pass
+    else:
+        due_dates.append(j.text)
+
+# print(ass_names)
+# print(due_dates)
+
+for x, y in zip(ass_names, due_dates):
+    print("\n")
+    summ = str(x)
+    mat = str(y)
+    bhardo(summ, mat)
+    print("Name = ", summ)
+    print("Due =", mat)
+    print("Event added to your calendar")
