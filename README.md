@@ -1,8 +1,6 @@
 # moodle-new-assignment-checker
 A python program that automates the task of adding new Moodle assignments to your Google Calendar.
 
-# Moodle Automation Script
-
 [![N|Solid](https://www.seleniumhq.org/images/big-logo.png)](https://micronaut.io/)
 
 This is a moodle automation script that can automatically add reminders about new assignments on their way a few days ago to your google calendar.
